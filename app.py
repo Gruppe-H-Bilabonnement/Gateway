@@ -38,7 +38,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-@swag_from('swagger/register.yml')
+#@swag_from('swagger/register.yml')
 def register():
     data = request.get_json()
     
@@ -65,7 +65,7 @@ def register():
         connection.close()
 
 @app.route('/login', methods=['POST'])
-@swag_from('swagger/docs/login.yml')
+#@swag_from('swagger/docs/login.yml')
 def login():
     data = request.get_json()
     
