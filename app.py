@@ -1,0 +1,142 @@
+from flask import Flask, jsonify, request
+import requests
+import sqlite3
+import bcrypt
+import os
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from dotenv import load_dotenv
+from flasgger import swag_from
+from swagger.config import init_swagger
+from database import get_db, init_db
+
+# Load environment variables from .env file
+load_dotenv()
+
+app = Flask(__name__)
+
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH')
+PORT = int(os.getenv('PORT', 5000))
+MICROSERVICES = {
+    "room_inventory_service": os.getenv("ROOM_INVENTORY_SERVICE_URL", "group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
+    "reservation_service": os.getenv("RESERVATION_SERVICE_URL", "http://localhost:5003"),
+    "csv_export_service": os.getenv("CSV_EXPORT_SERVICE_URL", "http://localhost:5005"),
+}
+
+# Configuration
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+jwt = JWTManager(app)
+
+# Initialize Swagger
+init_swagger(app)
+
+@app.route('/')
+def home():
+    return jsonify({
+        "service": "API Gateway",
+        "available_endpoints": [
+            {
+                "path": "/register",
+                "method": "POST",
+                "description": "Register a new user",
+                "body": {
+                    "username": "string",
+                    "password": "string"
+                },
+                "TEST": "1234"
+            },
+            {
+                "path": "/login",
+                "method": "POST",
+                "description": "Login to get JWT token",
+                "body": {
+                    "username": "string",
+                    "password": "string"
+                }
+            },
+            {
+                "path": "/api/github/stats",
+                "method": "GET",
+                "description": "Get GitHub repository statistics",
+                "authentication": "JWT required"
+            }
+        ]
+    })
+
+@app.route('/register', methods=['POST'])
+@swag_from('swagger/register.yaml')
+def register():
+    data = request.get_json()
+    
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"error": "Missing username or password"}), 400
+    
+    username = data['username']
+    password = data['password']
+    
+    # Hash the password
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    
+    try:
+        connection = sqlite3.connect(SQLITE_DB_PATH)
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)',
+                 (username, hashed))
+        connection.commit()
+        return jsonify({"message": "User created successfully"}), 201
+    except sqlite3.Error as e:
+        return jsonify({"error": f'Username already exists {e}'}), 409
+    finally:
+        connection.close()
+
+@app.route('/login', methods=['POST'])
+@swag_from('swagger/login.yaml')
+def login():
+    data = request.get_json()
+    
+    if not data or 'username' not in data or 'password' not in data:
+        return jsonify({"error": "Missing username or password"}), 400
+    
+    username = data['username']
+    password = data['password']
+    
+    connection = sqlite3.connect(SQLITE_DB_PATH)
+    connection.row_factory = sqlite3.Row
+    cursor = connection.cursor()
+    user = cursor.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+    connection.close()
+    
+    if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        access_token = create_access_token(identity=username)
+        return jsonify({
+            "message": "Login successful",
+            "access_token": access_token
+        })
+    
+    return jsonify({"error": "Invalid username or password"}), 401
+
+@app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@jwt_required()
+def gateway(service, path):
+    if service not in MICROSERVICES:
+        return jsonify({"error": "Service not found"}), 404
+
+    # Get the full URL for the microservice
+    url = f"{MICROSERVICES[service]}/{path}"
+
+    # Forward request with appropriate HTTP method
+    response = requests.request(
+        method=request.method,
+        url=url,
+        headers={key: value for key, value in request.headers},
+        data=request.get_data(),
+        cookies=request.cookies,
+        allow_redirects=False
+    )
+
+    # Pass response back to client
+    return (response.content, response.status_code, response.headers.items())
+
+if __name__ == '__main__':
+    init_db()
+    app.run()
