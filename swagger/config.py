@@ -15,7 +15,7 @@ def fetch_and_merge_swagger_docs(microservices):
 
     for service, url in microservices.items():
         try:
-            response = requests.get(f"{url}/api/v1/docs", timeout=5)
+            response = requests.get(f"{url}/api/v1/docs#/swagger.json", timeout=5)
             if response.status_code == 200:
                 service_doc = response.json()
                 # Merge paths
