@@ -99,14 +99,17 @@ def gateway(service, path):
     url = f"{MICROSERVICES[service]}/{path}"
 
     # Forward request with appropriate HTTP method
-    response = requests.request(
-        method=request.method,
-        url=url,
-        headers={key: value for key, value in request.headers},
-        data=request.get_data(),
-        cookies=request.cookies,
-        allow_redirects=False
-    )
+    try:
+        response = requests.request(
+            method=request.method,
+            url=url,
+            headers={key: value for key, value in request.headers if key != 'Host'},
+            data=request.get_data(),
+            cookies=request.cookies,
+            allow_redirects=False
+        )
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"Error connecting to {service}"}), 500
 
     # Pass response back to client
     return (response.content, response.status_code, response.headers.items())
