@@ -1,0 +1,25 @@
+register:
+  post:
+    summary: "Register a new user"
+    description: "Registers a user by storing their username and hashed password."
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              password:
+                type: string
+            required:
+              - username
+              - password
+    responses:
+      201:
+        description: "User created successfully"
+      400:
+        description: "Missing username or password"
+      409:
+        description: "Username already exists"

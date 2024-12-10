@@ -1,0 +1,56 @@
+openapi: 3.0.0
+info:
+  title: API Gateway Documentation
+  description: Gateway for forwarding requests to microservices.
+  version: 1.0.0
+servers:
+  - url: "http://localhost"
+paths:
+  /{service}/{path}:
+    get:
+      summary: "Proxy request to a service"
+      description: |
+        Forwards the request to a specified service and endpoint.
+        See the service links in the **Links** section below.
+      parameters:
+        - name: "service"
+          in: path
+          required: true
+          schema:
+            type: string
+            enum:
+              - car_management_service
+              - rental_service
+              - damage_management_service
+          description: "The microservice to forward the request to."
+        - name: "path"
+          in: path
+          required: true
+          schema:
+            type: string
+          description: "The endpoint path in the microservice."
+      responses:
+        200:
+          description: "Success response from the proxied microservice."
+        404:
+          description: "Service not found."
+        500:
+          description: "Error connecting to the service."
+      links:
+        carManagementDocs:
+          $ref: "#/components/links/CarManagementServiceDocs"
+        rentalServiceDocs:
+          $ref: "#/components/links/RentalServiceDocs"
+        damageManagementDocs:
+          $ref: "#/components/links/DamageManagementServiceDocs"
+components:
+  links:
+    CarManagementServiceDocs:
+      operationRef: "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net/swagger.json"
+      description: "Swagger documentation for Car Management Service"
+    RentalServiceDocs:
+      operationRef: "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/swagger.json"
+      description: "Swagger documentation for Rental Service"
+    DamageManagementServiceDocs:
+      operationRef: "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net/swagger.json"
+      description: "Swagger documentation for Damage Management Service"

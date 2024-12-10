@@ -38,7 +38,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-#@swag_from('swagger/register.yaml')
+@swag_from('./swagger/register.yml')
 def register():
     data = request.get_json()
     
@@ -65,7 +65,7 @@ def register():
         connection.close()
 
 @app.route('/login', methods=['POST'])
-#@swag_from('swagger/login.yaml')
+@swag_from('./swagger/docs/login.yml')
 def login():
     data = request.get_json()
     
@@ -91,6 +91,7 @@ def login():
     return jsonify({"error": "Invalid username or password"}), 401
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@swag_from('./swagger/docs/gateway.yml')
 @jwt_required()
 def gateway(service, path):
     if service not in MICROSERVICES:
