@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from dotenv import load_dotenv
 from flasgger import swag_from
 from swagger.config import init_swagger
-from database import init_db
+from database.initialize import init_db
 
 # Load environment variables from .env file
 load_dotenv()
@@ -22,7 +22,7 @@ MICROSERVICES = {
 }
 
 # Configuration
-app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
+app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
 jwt = JWTManager(app)
 
 # Initialize Swagger
@@ -31,34 +31,7 @@ init_swagger(app)
 @app.route('/')
 def home():
     return jsonify({
-        "service": "API Gateway",
-        "available_endpoints": [
-            {
-                "path": "/register",
-                "method": "POST",
-                "description": "Register a new user",
-                "body": {
-                    "username": "string",
-                    "password": "string"
-                },
-                "TEST": "1234"
-            },
-            {
-                "path": "/login",
-                "method": "POST",
-                "description": "Login to get JWT token",
-                "body": {
-                    "username": "string",
-                    "password": "string"
-                }
-            },
-            {
-                "path": "/api/github/stats",
-                "method": "GET",
-                "description": "Get GitHub repository statistics",
-                "authentication": "JWT required"
-            }
-        ]
+        "service": "API Gateway"
     })
 
 @app.route('/register', methods=['POST'])
