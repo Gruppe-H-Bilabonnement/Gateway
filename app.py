@@ -14,7 +14,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', 'user.db')
 MICROSERVICES = {
     "car_management_service": os.getenv("CAR_MANAGEMENT_SERVICE_URL", "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
     "rental_service": os.getenv("RENTAL_SERVICE_URL", "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net"),
@@ -136,6 +136,14 @@ def gateway(service, path):
     # Pass response back to client
     return (response.content, response.status_code, response.headers.items())
 
+@app.errorhandler(404)
+def not_found(e):
+    return jsonify({"Error": "Endpoints not found"}), 404
+
+@app.errorhandler(500)
+def internal_error(e):
+    return jsonify({"Error": "Internal server error"}), 500
+
 if __name__ == '__main__':
     init_db()
-    app.run()
+    app.run(host='0.0.0.0', port=80)
