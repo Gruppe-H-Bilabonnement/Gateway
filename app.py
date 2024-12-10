@@ -10,7 +10,7 @@ from swagger.config import init_swagger
 #from database.initialize import init_db
 
 # Load environment variables from .env file
-load_dotenv()
+#load_dotenv()
 
 app = Flask(__name__)
 
@@ -49,7 +49,7 @@ def register():
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     
     try:
-        connection = sqlite3.connect('users.db')
+        connection = sqlite3.connect('/home/users.db')
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)',
@@ -72,7 +72,7 @@ def login():
     username = data['username']
     password = data['password']
     
-    connection = sqlite3.connect('users.db')
+    connection = sqlite3.connect('/home/users.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     user = cursor.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
@@ -119,7 +119,7 @@ def internal_error(e):
 
 def init_db():
     try:
-        connection = sqlite3.connect('users.db')
+        connection = sqlite3.connect('/home/users.db')
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('''
