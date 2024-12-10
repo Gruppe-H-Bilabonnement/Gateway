@@ -7,14 +7,14 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from dotenv import load_dotenv
 from flasgger import swag_from
 from swagger.config import init_swagger
-from database.initialize import init_db
+#from database.initialize import init_db
 
 # Load environment variables from .env file
 load_dotenv()
 
 app = Flask(__name__)
 
-SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', 'user.db')
 MICROSERVICES = {
     "car_management_service": os.getenv("CAR_MANAGEMENT_SERVICE_URL", "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
     "rental_service": os.getenv("RENTAL_SERVICE_URL", "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net"),
@@ -117,6 +117,24 @@ def not_found(e):
 def internal_error(e):
     return jsonify({"Error": "Internal server error"}), 500
 
+def init_db():
+    try:
+        connection = sqlite3.connect(SQLITE_DB_PATH)
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
+            )
+        ''')
+    except sqlite3.Error as e:
+        print(f'Error creating users table: {e}')
+    finally:
+        connection.commit()
+        connection.close()
+        
 if __name__ == '__main__':
     init_db()
     app.run(host='0.0.0.0', port=80)
