@@ -9,6 +9,24 @@ from flasgger import swag_from
 from swagger.config import init_swagger
 #from database.initialize import init_db
 
+def init_db():
+    try:
+        connection = sqlite3.connect('/home/users.db')
+        connection.row_factory = sqlite3.Row
+        cursor = connection.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT UNIQUE NOT NULL,
+                password TEXT NOT NULL
+            )
+        ''')
+    except sqlite3.Error as e:
+        print(f'Error creating users table: {e}')
+    finally:
+        connection.commit()
+        connection.close()
+
 # Load environment variables from .env file
 #load_dotenv()
 
@@ -24,6 +42,8 @@ MICROSERVICES = {
 # Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
 jwt = JWTManager(app)
+
+init_db()
 
 # Initialize Swagger
 init_swagger(app)
@@ -116,25 +136,6 @@ def not_found(e):
 @app.errorhandler(500)
 def internal_error(e):
     return jsonify({"Error": "Internal server error"}), 500
-
-def init_db():
-    try:
-        connection = sqlite3.connect('/home/users.db')
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL
-            )
-        ''')
-    except sqlite3.Error as e:
-        print(f'Error creating users table: {e}')
-    finally:
-        connection.commit()
-        connection.close()
         
 if __name__ == '__main__':
-    init_db()
     app.run(host='0.0.0.0', port=80)
