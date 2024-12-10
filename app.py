@@ -97,6 +97,8 @@ def gateway(service, path):
 
     # Get the full URL for the microservice
     url = f"{MICROSERVICES[service]}/{path}"
+    app.logger.debug(f"Forwarding request to {url}")
+    app.logger.debug(f'data: {request.get_json()}')
 
     # Forward request with appropriate HTTP method
     try:
