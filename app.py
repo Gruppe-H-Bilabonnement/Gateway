@@ -7,7 +7,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from dotenv import load_dotenv
 from flasgger import swag_from
 from swagger.config import init_swagger
-from database import get_db, init_db
+from database import init_db
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,11 +15,10 @@ load_dotenv()
 app = Flask(__name__)
 
 SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH')
-PORT = int(os.getenv('PORT', 5000))
 MICROSERVICES = {
-    "room_inventory_service": os.getenv("ROOM_INVENTORY_SERVICE_URL", "group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
-    "reservation_service": os.getenv("RESERVATION_SERVICE_URL", "http://localhost:5003"),
-    "csv_export_service": os.getenv("CSV_EXPORT_SERVICE_URL", "http://localhost:5005"),
+    "car_management_service": os.getenv("CAR_MANAGEMENT_SERVICE_URL", "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
+    "rental_service": os.getenv("RENTAL_SERVICE_URL", "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net"),
+    "damage_management_service": os.getenv("DAMAGE_MANAGEMENT_SERVICE_URL", "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net"),
 }
 
 # Configuration
@@ -63,7 +62,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-@swag_from('swagger/register.yaml')
+#@swag_from('swagger/register.yaml')
 def register():
     data = request.get_json()
     
@@ -90,7 +89,7 @@ def register():
         connection.close()
 
 @app.route('/login', methods=['POST'])
-@swag_from('swagger/login.yaml')
+#@swag_from('swagger/login.yaml')
 def login():
     data = request.get_json()
     
