@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/users.db')
 
 # comment out below
 def init_db():
