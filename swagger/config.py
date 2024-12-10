@@ -17,8 +17,8 @@ def init_swagger(app):
     template = {
         "swagger": "2.0",
         "info": {
-            "title": "DamageService API",
-            "description": "API for managing damage on rental cars",
+            "title": "API Gateway",
+            "description": "API gateway for managing rental cars",
             "version": "1.0.0"
         },
         "securityDefinitions": {
