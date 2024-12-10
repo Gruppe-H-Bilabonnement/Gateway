@@ -14,7 +14,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', 'users.db')
+#SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', 'users.db')
 MICROSERVICES = {
     "car_management_service": os.getenv("CAR_MANAGEMENT_SERVICE_URL", "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
     "rental_service": os.getenv("RENTAL_SERVICE_URL", "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net"),
@@ -49,7 +49,7 @@ def register():
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     
     try:
-        connection = sqlite3.connect(SQLITE_DB_PATH)
+        connection = sqlite3.connect('users.db')
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)',
@@ -72,7 +72,7 @@ def login():
     username = data['username']
     password = data['password']
     
-    connection = sqlite3.connect(SQLITE_DB_PATH)
+    connection = sqlite3.connect('users.db')
     connection.row_factory = sqlite3.Row
     cursor = connection.cursor()
     user = cursor.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
@@ -119,7 +119,7 @@ def internal_error(e):
 
 def init_db():
     try:
-        connection = sqlite3.connect(SQLITE_DB_PATH)
+        connection = sqlite3.connect('users.db')
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('''
