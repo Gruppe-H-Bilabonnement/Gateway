@@ -1,16 +1,16 @@
 import sqlite3
-#import os
-#from dotenv import load_dotenv
+import os
+from dotenv import load_dotenv
 
 # Load environment variables from .env file
-#load_dotenv()
+load_dotenv()
 
-#SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
 
 # comment out below
 def init_db():
     try:
-        connection = sqlite3.connect('/home/users.db')
+        connection = sqlite3.connect(SQLITE_DB_PATH)
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('''
