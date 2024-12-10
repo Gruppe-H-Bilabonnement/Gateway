@@ -7,25 +7,7 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from dotenv import load_dotenv
 from flasgger import swag_from
 from swagger.config import init_swagger
-#from database.initialize import init_db
-
-def init_db():
-    try:
-        connection = sqlite3.connect('/home/users.db')
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        cursor.execute('''
-            CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT UNIQUE NOT NULL,
-                password TEXT NOT NULL
-            )
-        ''')
-    except sqlite3.Error as e:
-        print(f'Error creating users table: {e}')
-    finally:
-        connection.commit()
-        connection.close()
+from database.initialize import init_db
 
 # Load environment variables from .env file
 #load_dotenv()
