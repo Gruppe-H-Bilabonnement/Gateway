@@ -1,11 +1,11 @@
 import sqlite3
-from os import getenv
+import os
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
-SQLITE_DB_PATH = getenv('SQLITE_DB_PATH', 'user.db')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
 
 def init_db():
     try:

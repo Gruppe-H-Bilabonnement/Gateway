@@ -14,7 +14,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', 'user.db')
+SQLITE_DB_PATH = os.getenv('SQLITE_DB_PATH', '/home/user.db')
 MICROSERVICES = {
     "car_management_service": os.getenv("CAR_MANAGEMENT_SERVICE_URL", "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net"),
     "rental_service": os.getenv("RENTAL_SERVICE_URL", "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net"),
