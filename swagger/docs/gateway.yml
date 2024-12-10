@@ -38,10 +38,10 @@ components:
   links:
     CarManagementServiceDocs:
       description: "Swagger documentation for Car Management Service"
-      url: "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net/swagger.json"
+      url: "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net/api/v1/docs"
     RentalServiceDocs:
       description: "Swagger documentation for Rental Service"
-      url: "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/swagger.json"
+      url: "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/api/v1/docs"
     DamageManagementServiceDocs:
       description: "Swagger documentation for Damage Management Service"
-      url: "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net/swagger.json"
+      url: "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net/api/v1/docs"
