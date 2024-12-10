@@ -1,0 +1,4 @@
+.venv
+.gitignore
+Dockerfile
+.DS_Store
