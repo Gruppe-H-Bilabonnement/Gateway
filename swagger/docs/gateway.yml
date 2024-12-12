@@ -1,47 +1,45 @@
-openapi: 3.0.0
-info:
-  title: API Gateway Documentation
-  description: Gateway for forwarding requests to microservices.
-  version: 1.0.0
-paths:
-  /{service}/{path}:
-    get:
-      summary: "Proxy request to a microservice"
-      description: |
-        Forwards the request to the specified microservice and path.
-        See the links below for the Swagger documentation of the connected microservices.
-      parameters:
-        - name: "service"
-          in: path
-          required: true
-          schema:
-            type: string
-            enum:
-              - car_management_service
-              - rental_service
-              - damage_management_service
-          description: "The microservice to forward the request to."
-        - name: "path"
-          in: path
-          required: true
-          schema:
-            type: string
-          description: "The specific endpoint path in the microservice."
-      responses:
-        200:
-          description: "Success response from the proxied microservice."
-        404:
-          description: "Service not found."
-        500:
-          description: "Error connecting to the service."
-components:
-  links:
-    CarManagementServiceDocs:
-      description: "Swagger documentation for Car Management Service"
-      url: "https://group-h-car-management-service-fhaeddg8agfddvdu.northeurope-01.azurewebsites.net/api/v1/docs"
-    RentalServiceDocs:
-      description: "Swagger documentation for Rental Service"
-      url: "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/api/v1/docs"
-    DamageManagementServiceDocs:
-      description: "Swagger documentation for Damage Management Service"
-      url: "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net/api/v1/docs"
+summary: "Forward API requests to microservices"
+description: "Handles requests to specific microservices and forwards them while validating the JWT token"
+parameters:
+  - name: "service"
+    in: "path"
+    required: true
+    description: "The name of the microservice"
+    schema:
+      type: "string"
+      example: "car_management_service"
+  - name: "path"
+    in: "path"
+    required: true
+    description: "The endpoint path within the microservice"
+    schema:
+      type: "string"
+      example: "cars"
+responses:
+  200:
+    description: "Request forwarded successfully"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          additionalProperties: true
+  404:
+    description: "Service not found"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Service not found"
+  500:
+    description: "Error connecting to service"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Error connecting to service: <error details>"
