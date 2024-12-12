@@ -103,13 +103,16 @@ def gateway(service, path):
     app.logger.debug(f"Forwarding request to {url}")
     app.logger.debug(f'data: {request.get_json()}')
 
+    # Handle empty body
+    data = request.get_data(as_text=True) if request.content_length else None
+
     # Forward request with appropriate HTTP method
     try:
         response = requests.request(
             method=request.method,
             url=url,
             headers={key: value for key, value in request.headers if key != 'Host'},
-            data = request.get_data() if request.get_data() else {},
+            data = data,
             cookies=request.cookies,
             allow_redirects=False
         )
