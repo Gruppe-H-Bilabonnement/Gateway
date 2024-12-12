@@ -125,18 +125,16 @@ def refresh_swagger():
     paths = {}
     tags = []
 
-    for service_name, swagger_url in MICROSERVICES.items():
+    for service_name, service_url in MICROSERVICES.items():
         try:
-            response = requests.get(f"{swagger_url}/docs/apispec.json", timeout=5)
+            response = requests.get(f"{service_url}/docs/apispec.json", timeout=5)
             response.raise_for_status()
             service_docs = response.json()
-            # Merge paths and tags from each microservice's Swagger spec
             paths.update(service_docs.get("paths", {}))
-            tags.extend(service_docs.get("tags", []))
+            tags.extend(service_docs.get("tags", [{"name": service_name}]))
         except requests.RequestException as e:
-            return jsonify({"error": f"Failed to fetch docs from {service_name}: {str(e)}"}), 500
+            return jsonify({"error": f"Failed to fetch Swagger docs from {service_name}: {str(e)}"}), 500
 
-    # Update Swagger template
     swagger.template["paths"] = paths
     swagger.template["tags"] = tags
     return jsonify({"message": "Swagger documentation updated successfully"}), 200
