@@ -108,7 +108,7 @@ def gateway(service, path):
             method=request.method,
             url=url,
             headers={key: value for key, value in request.headers if key != 'Host'},
-            data=request.get_data(),
+            data = request.get_data() if request.get_data() else None,
             cookies=request.cookies,
             allow_redirects=False
         )
