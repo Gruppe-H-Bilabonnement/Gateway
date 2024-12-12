@@ -91,31 +91,56 @@ def login():
     
     return jsonify({"error": "Invalid username or password"}), 401
 
-@app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+# Gateway endpoint
+@app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
 @jwt_required()
-@swag_from('swagger/docs/gateway.yml')
+@swag_from('gateway.yml')
 def gateway(service, path):
+    """Forward requests to the appropriate microservice."""
     if service not in MICROSERVICES:
         return jsonify({"error": "Service not found"}), 404
 
-    # Forward the request to the respective microservice
-    url = f"{MICROSERVICES[service]}/{path}"
+    # Construct the target microservice URL
+    target_url = f"{MICROSERVICES[service]}/{path}"
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
     data = request.get_data()
 
     try:
         response = requests.request(
             method=request.method,
-            url=url,
+            url=target_url,
             headers=headers,
             data=data,
             cookies=request.cookies,
             allow_redirects=False
         )
+        return response.content, response.status_code, response.headers.items()
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
 
-    return (response.content, response.status_code, response.headers.items())
+# Refresh Swagger documentation dynamically
+@app.route("/refresh-swagger", methods=["POST"])
+def refresh_swagger():
+    """Fetch and update Swagger documentation dynamically from microservices."""
+    global swagger
+    paths = {}
+    tags = []
+
+    for service_name, swagger_url in MICROSERVICES.items():
+        try:
+            response = requests.get(f"{swagger_url}/docs/apispec.json", timeout=5)
+            response.raise_for_status()
+            service_docs = response.json()
+            # Merge paths and tags from each microservice's Swagger spec
+            paths.update(service_docs.get("paths", {}))
+            tags.extend(service_docs.get("tags", []))
+        except requests.RequestException as e:
+            return jsonify({"error": f"Failed to fetch docs from {service_name}: {str(e)}"}), 500
+
+    # Update Swagger template
+    swagger.template["paths"] = paths
+    swagger.template["tags"] = tags
+    return jsonify({"message": "Swagger documentation updated successfully"}), 200
 
 @app.errorhandler(404)
 def not_found(e):
