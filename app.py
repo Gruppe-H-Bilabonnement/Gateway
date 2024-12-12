@@ -101,18 +101,22 @@ def gateway(service, path):
     url = f"{MICROSERVICES[service]}/{path}"
     app.logger.debug(f"Forwarding request to {url}")
 
-    # Prepare headers and data
+    # Prepare headers
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
 
-    # Only parse JSON if Content-Type is 'application/json'
+    # Enforce Content-Type: application/json for GET requests (or all requests if needed)
+    if 'Content-Type' not in headers or request.method == 'GET':
+        headers['Content-Type'] = 'application/json'
+
+    # Handle data
     data = None
-    if request.content_type == 'application/json' and request.method in ['POST', 'PUT']:
+    if request.method in ['POST', 'PUT'] and request.content_type == 'application/json':
         try:
-            data = request.get_json(force=True)  # Force parsing JSON
+            data = request.get_json(force=True)  # Force parsing JSON for body
         except Exception as e:
             return jsonify({"error": f"Invalid JSON: {str(e)}"}), 400
-    else:
-        data = request.get_data()
+    elif request.method in ['POST', 'PUT']:
+        data = request.get_data()  # Use raw data for non-JSON content types
 
     # Forward the request
     try:
@@ -129,6 +133,7 @@ def gateway(service, path):
 
     # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
+
 
 
 @app.errorhandler(404)
