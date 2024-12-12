@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 init_db()
 
 # Initialize Swagger
-init_swagger(app, MICROSERVICES)
+init_swagger(app)
 
 @app.route('/')
 def home():
