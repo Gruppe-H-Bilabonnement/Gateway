@@ -98,21 +98,11 @@ def gateway(service, path):
     if service not in MICROSERVICES:
         return jsonify({"error": "Service not found"}), 404
 
-    # Get the full URL for the microservice
+    # Forward the request to the respective microservice
     url = f"{MICROSERVICES[service]}/{path}"
-    app.logger.debug(f"Forwarding request to {url}")
-
-    # Prepare headers
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
-
-    # Enforce Content-Type for JSON requests
-    if 'Content-Type' not in headers and request.method in ['POST', 'PUT']:
-        headers['Content-Type'] = 'application/json'
-
-    # Get the request data
     data = request.get_data()
 
-    # Forward the request
     try:
         response = requests.request(
             method=request.method,
@@ -125,9 +115,7 @@ def gateway(service, path):
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
 
-    # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
-
 
 @app.errorhandler(404)
 def not_found(e):
