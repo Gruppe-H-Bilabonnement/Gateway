@@ -92,7 +92,7 @@ def login():
     return jsonify({"error": "Invalid username or password"}), 401
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-#@swag_from('swagger/docs/gateway.yml')
+@swag_from('swagger/docs/gateway.yml')
 @jwt_required()
 def gateway(service, path):
     if service not in MICROSERVICES:
