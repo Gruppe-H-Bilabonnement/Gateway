@@ -92,6 +92,7 @@ def login():
     return jsonify({"error": "Invalid username or password"}), 401
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+#@swag_from('swagger/docs/gateway.yml')
 @jwt_required()
 def gateway(service, path):
     if service not in MICROSERVICES:
@@ -100,41 +101,32 @@ def gateway(service, path):
     # Get the full URL for the microservice
     url = f"{MICROSERVICES[service]}/{path}"
     app.logger.debug(f"Forwarding request to {url}")
+    app.logger.debug(f'data: {request.get_json()}')
 
-    # Prepare headers
-    headers = {key: value for key, value in request.headers if key.lower() != 'host'}
+    # Handle empty body
+    data = request.get_data() or None
+    headers = None
+    if request.method is not 'POST' or 'PUT' or 'PATCH':
+        headers={key: value for key, value in request.headers 
+                 if key != 'Host' or key != 'Content-Length'} or {'Content-Type': 'application/json'},
+    else:
+        headers={key: value for key, value in request.headers if key != 'Host'}
 
-    # Enforce Content-Type: application/json for GET requests (or all requests if needed)
-    if 'Content-Type' not in headers or request.method == 'GET':
-        headers['Content-Type'] = 'application/json'
-
-    # Handle data
-    data = None
-    if request.method in ['POST', 'PUT'] and request.content_type == 'application/json':
-        try:
-            data = request.get_json(force=True)  # Force parsing JSON for body
-        except Exception as e:
-            return jsonify({"error": f"Invalid JSON: {str(e)}"}), 400
-    elif request.method in ['POST', 'PUT']:
-        data = request.get_data()  # Use raw data for non-JSON content types
-
-    # Forward the request
+    # Forward request with appropriate HTTP method
     try:
         response = requests.request(
             method=request.method,
             url=url,
             headers=headers,
-            data=data,
+            data = data,
             cookies=request.cookies,
             allow_redirects=False
         )
     except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
+        return jsonify({"error": f"Error connecting to {service}"}), 500
 
-    # Pass response back to the client
+    # Pass response back to client
     return (response.content, response.status_code, response.headers.items())
-
-
 
 @app.errorhandler(404)
 def not_found(e):
