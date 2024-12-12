@@ -92,7 +92,6 @@ def login():
     return jsonify({"error": "Invalid username or password"}), 401
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
-#@swag_from('swagger/docs/gateway.yml')
 @jwt_required()
 def gateway(service, path):
     if service not in MICROSERVICES:
@@ -101,26 +100,36 @@ def gateway(service, path):
     # Get the full URL for the microservice
     url = f"{MICROSERVICES[service]}/{path}"
     app.logger.debug(f"Forwarding request to {url}")
-    app.logger.debug(f'data: {request.get_json()}')
 
-    # Handle empty body
-    data = request.get_data(as_text=True) if request.content_length else None
+    # Prepare headers and data
+    headers = {key: value for key, value in request.headers if key.lower() != 'host'}
 
-    # Forward request with appropriate HTTP method
+    # Only parse JSON if Content-Type is 'application/json'
+    data = None
+    if request.content_type == 'application/json' and request.method in ['POST', 'PUT']:
+        try:
+            data = request.get_json(force=True)  # Force parsing JSON
+        except Exception as e:
+            return jsonify({"error": f"Invalid JSON: {str(e)}"}), 400
+    else:
+        data = request.get_data()
+
+    # Forward the request
     try:
         response = requests.request(
             method=request.method,
             url=url,
-            headers={key: value for key, value in request.headers if key != 'Host'},
-            data = data,
+            headers=headers,
+            data=data,
             cookies=request.cookies,
             allow_redirects=False
         )
     except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"Error connecting to {service}"}), 500
+        return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
 
-    # Pass response back to client
+    # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
+
 
 @app.errorhandler(404)
 def not_found(e):
