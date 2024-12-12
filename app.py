@@ -6,7 +6,7 @@ import os
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from flasgger import swag_from
-from swagger.config import init_swagger
+from swagger.config import init_swagger, update_swagger
 from database.initialize import init_db
 
 # Load environment variables from .env file
@@ -128,9 +128,9 @@ def gateway(service, path):
     return (response.content, response.status_code, response.headers.items())
 
 @app.route('/refresh-swagger', methods=["POST"])
-@app.route('/refresh-swagger', methods=["POST"])
 def refresh_swagger():
     """Fetch and update Swagger documentation dynamically from microservices."""
+    global swagger
     paths = {}
     tags = []
 
@@ -156,16 +156,7 @@ def refresh_swagger():
             return jsonify({"error": f"Failed to fetch Swagger docs from {service_name}: {str(e)}"}), 500
 
     # Update Swagger UI with new paths and tags (without re-initializing)
-    swagger.app.config['SWAGGER'] = {
-        'specs': [{
-            'endpoint': 'apispec',
-            'route': '/swagger.json',
-            'rule': {
-                'paths': paths,
-                'tags': tags
-            }
-        }]
-    }
+    swagger = update_swagger(swagger, paths, tags)
     return jsonify({"message": "Swagger documentation updated successfully"}), 200
 
 @app.errorhandler(404)

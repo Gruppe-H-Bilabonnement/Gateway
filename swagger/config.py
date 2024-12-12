@@ -20,3 +20,9 @@ def init_swagger(app, paths, tags):
         "tags": tags,
     }
     return Swagger(app, config=swagger_config, template=template)
+
+def update_swagger(swagger_instance, paths, tags):
+    """Update existing Swagger instance with new paths and tags."""
+    swagger_instance.template['paths'] = paths
+    swagger_instance.template['tags'] = tags
+    return swagger_instance
