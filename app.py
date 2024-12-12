@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 init_db()
 
 # Initialize Swagger
-init_swagger(app)
+swagger = init_swagger(app)
 
 @app.route('/')
 def home():
@@ -39,7 +39,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-@swag_from('swagger/register.yml')
+@swag_from('swagger/docs/register.yml')
 def register():
     data = request.get_json()
     
