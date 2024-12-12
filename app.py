@@ -30,7 +30,7 @@ jwt = JWTManager(app)
 init_db()
 
 # Initialize Swagger
-swagger = init_swagger(app)
+swagger = init_swagger(app, MICROSERVICES)
 
 @app.route('/')
 def home():
@@ -39,7 +39,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-@swag_from('swagger/docs/register.yml')
+@swag_from('swagger/register.yml')
 def register():
     data = request.get_json()
     
@@ -93,16 +93,25 @@ def login():
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @jwt_required()
-@swag_from('swagger/docs/gateway.yml')
 def gateway(service, path):
     if service not in MICROSERVICES:
         return jsonify({"error": "Service not found"}), 404
 
-    # Forward the request to the respective microservice
+    # Get the full URL for the microservice
     url = f"{MICROSERVICES[service]}/{path}"
+    app.logger.debug(f"Forwarding request to {url}")
+
+    # Prepare headers
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
+
+    # Enforce Content-Type for JSON requests
+    if 'Content-Type' not in headers and request.method in ['POST', 'PUT']:
+        headers['Content-Type'] = 'application/json'
+
+    # Get the request data
     data = request.get_data()
 
+    # Forward the request
     try:
         response = requests.request(
             method=request.method,
@@ -115,19 +124,18 @@ def gateway(service, path):
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
 
+    # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
 
-# Refresh Swagger documentation dynamically
 @app.route("/refresh-swagger", methods=["POST"])
 def refresh_swagger():
     """Fetch and update Swagger documentation dynamically from microservices."""
-    global swagger
     paths = {}
     tags = []
 
     for service_name, service_url in MICROSERVICES.items():
         try:
-            response = requests.get(f"{service_url}/docs/apispec.json", timeout=5)
+            response = requests.get(f"{service_url}/api/v1/docs/apispec.json", timeout=15)
             response.raise_for_status()
             service_docs = response.json()
             paths.update(service_docs.get("paths", {}))
@@ -138,7 +146,6 @@ def refresh_swagger():
     swagger.template["paths"] = paths
     swagger.template["tags"] = tags
     return jsonify({"message": "Swagger documentation updated successfully"}), 200
-
 
 @app.errorhandler(404)
 def not_found(e):
