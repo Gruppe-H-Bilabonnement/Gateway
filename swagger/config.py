@@ -1,13 +1,13 @@
 from flasgger import Swagger
 
-def init_swagger(app):
+def init_swagger(app, paths, tags):
     """Initialize Swagger with base configurations."""
     swagger_config = {
         "headers": [],
         "specs": [{"endpoint": "apispec", "route": "/apispec.json"}],
         "static_url_path": "/flasgger_static",
         "swagger_ui": True,
-        "specs_route": "/api/v1/docs",
+        "specs_route": "/api/v1/docs",  # URL where Swagger UI is hosted
     }
     template = {
         "swagger": "2.0",
@@ -16,7 +16,7 @@ def init_swagger(app):
             "description": "API Gateway for Bilabonnement.dk",
             "version": "1.0.0",
         },
-        "paths": {},
-        "tags": [],
+        "paths": paths,
+        "tags": tags,
     }
     return Swagger(app, config=swagger_config, template=template)

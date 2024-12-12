@@ -29,8 +29,8 @@ jwt = JWTManager(app)
 # Initialize database
 init_db()
 
-# Initialize Swagger
-swagger = init_swagger(app, MICROSERVICES)
+# Initialize Swagger (only once during app startup)
+swagger = init_swagger(app, {}, [])
 
 @app.route('/')
 def home():
@@ -127,24 +127,45 @@ def gateway(service, path):
     # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
 
-@app.route("/refresh-swagger", methods=["POST"])
+@app.route('/refresh-swagger', methods=["POST"])
+@app.route('/refresh-swagger', methods=["POST"])
 def refresh_swagger():
     """Fetch and update Swagger documentation dynamically from microservices."""
     paths = {}
     tags = []
 
+    # Fetch and aggregate the Swagger docs from microservices
     for service_name, service_url in MICROSERVICES.items():
         try:
             response = requests.get(f"{service_url}/api/v1/docs/apispec.json", timeout=15)
             response.raise_for_status()
             service_docs = response.json()
-            paths.update(service_docs.get("paths", {}))
-            tags.extend(service_docs.get("tags", [{"name": service_name}]))
+
+            # Dynamically integrate paths from microservices
+            if "paths" in service_docs:
+                for path, operations in service_docs["paths"].items():
+                    # Ensure the paths are added under the correct service
+                    new_path = f"/{service_name}{path}"
+                    paths[new_path] = operations
+
+            # Add the service's tag to the Swagger UI
+            if "tags" in service_docs:
+                tags.extend(service_docs["tags"])
+
         except requests.RequestException as e:
             return jsonify({"error": f"Failed to fetch Swagger docs from {service_name}: {str(e)}"}), 500
 
-    swagger.template["paths"] = paths
-    swagger.template["tags"] = tags
+    # Update Swagger UI with new paths and tags (without re-initializing)
+    swagger.app.config['SWAGGER'] = {
+        'specs': [{
+            'endpoint': 'apispec',
+            'route': '/swagger.json',
+            'rule': {
+                'paths': paths,
+                'tags': tags
+            }
+        }]
+    }
     return jsonify({"message": "Swagger documentation updated successfully"}), 200
 
 @app.errorhandler(404)
