@@ -108,18 +108,8 @@ def gateway(service, path):
     if 'Content-Type' not in headers and request.method in ['POST', 'PUT']:
         headers['Content-Type'] = 'application/json'
 
-    # Handle body for POST/PUT
-    data = None
-    if request.method in ['POST', 'PUT']:
-        if request.content_type == 'application/json':
-            try:
-                # Use get_data() to forward raw JSON as is
-                data = request.get_data()
-            except Exception as e:
-                return jsonify({"error": f"Invalid JSON: {str(e)}"}), 400
-        else:
-            # For non-JSON content types, use raw data
-            data = request.get_data()
+    # Get the request data
+    data = request.get_data()
 
     # Forward the request
     try:
