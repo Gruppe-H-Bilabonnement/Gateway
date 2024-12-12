@@ -91,32 +91,31 @@ def login():
     
     return jsonify({"error": "Invalid username or password"}), 401
 
-# Gateway endpoint
-@app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE', 'PATCH'])
+@app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
 @jwt_required()
-@swag_from('gateway.yml')
+@swag_from('swagger/docs/gateway.yml')
 def gateway(service, path):
-    """Forward requests to the appropriate microservice."""
     if service not in MICROSERVICES:
         return jsonify({"error": "Service not found"}), 404
 
-    # Construct the target microservice URL
-    target_url = f"{MICROSERVICES[service]}/{path}"
+    # Forward the request to the respective microservice
+    url = f"{MICROSERVICES[service]}/{path}"
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
     data = request.get_data()
 
     try:
         response = requests.request(
             method=request.method,
-            url=target_url,
+            url=url,
             headers=headers,
             data=data,
             cookies=request.cookies,
             allow_redirects=False
         )
-        return response.content, response.status_code, response.headers.items()
     except requests.exceptions.RequestException as e:
         return jsonify({"error": f"Error connecting to {service}: {str(e)}"}), 500
+
+    return (response.content, response.status_code, response.headers.items())
 
 # Refresh Swagger documentation dynamically
 @app.route("/refresh-swagger", methods=["POST"])
@@ -141,6 +140,7 @@ def refresh_swagger():
     swagger.template["paths"] = paths
     swagger.template["tags"] = tags
     return jsonify({"message": "Swagger documentation updated successfully"}), 200
+
 
 @app.errorhandler(404)
 def not_found(e):
