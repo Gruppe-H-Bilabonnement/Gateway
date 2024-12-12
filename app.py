@@ -23,6 +23,7 @@ MICROSERVICES = {
 
 # Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 # 1 hour
 jwt = JWTManager(app)
 
 # Initialize database
