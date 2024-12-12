@@ -1,50 +1,53 @@
-summary: "User login"
-description: "Authenticates a user and returns a JWT token"
-requestBody:
-  description: "User login details"
-  required: true
-  content:
-    application/json:
-      schema:
-        type: "object"
-        properties:
-          username:
-            type: "string"
-            example: "johndoe"
-          password:
-            type: "string"
-            example: "password123"
+User Login
+---
+tags:
+  - Authentication
+summary: "Login to obtain JWT token"
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "johndoe"
+        password:
+          type: string
+          example: "secretpassword"
+      required:
+        - username
+        - password
 responses:
   200:
-    description: "Login successful"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            message:
-              type: "string"
-              example: "Login successful"
-            access_token:
-              type: "string"
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    description: Login successful
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Login successful"
+        access_token:
+          type: string
+          example: "eyJ0eXAiOiJKV1QiLCJhbGc..."
   400:
-    description: "Missing username or password"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            error:
-              type: "string"
-              example: "Missing username or password"
+    description: Missing required fields
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing username or password"
   401:
-    description: "Invalid username or password"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            error:
-              type: "string"
-              example: "Invalid username or password"
+    description: Invalid credentials
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid username or password"

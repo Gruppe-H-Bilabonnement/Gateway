@@ -1,47 +1,50 @@
-summary: "Register a new user"
-description: "Creates a new user account with a username and password"
-requestBody:
-  description: "User registration details"
-  required: true
-  content:
-    application/json:
-      schema:
-        type: "object"
-        properties:
-          username:
-            type: "string"
-            example: "johndoe"
-          password:
-            type: "string"
-            example: "password123"
+Register new user
+---
+tags:
+  - Authentication
+summary: "Register a new user account"
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        username:
+          type: string
+          example: "johndoe"
+        password:
+          type: string
+          example: "secretpassword"
+      required:
+        - username
+        - password
 responses:
   201:
-    description: "User created successfully"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            message:
-              type: "string"
-              example: "User created successfully"
+    description: User successfully created
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "User created successfully"
   400:
-    description: "Missing username or password"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            error:
-              type: "string"
-              example: "Missing username or password"
+    description: Missing required fields
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing username or password"
   409:
-    description: "Username already exists"
-    content:
-      application/json:
-        schema:
-          type: "object"
-          properties:
-            error:
-              type: "string"
-              example: "Username already exists"
+    description: Username already exists
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Username already exists"
