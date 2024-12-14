@@ -21,6 +21,10 @@ MICROSERVICES = {
     "damage_management_service": os.getenv("DAMAGE_MANAGEMENT_SERVICE_URL", "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net"),
 }
 
+MICROSERVICES_FOR_SWAGGER = {
+    "rental_service": "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/api/v1/rentals",
+}
+
 # Configuration
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 # 1 hour
@@ -127,37 +131,70 @@ def gateway(service, path):
     # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
 
-@app.route('/refresh-swagger', methods=["POST"])
-def refresh_swagger():
-    """Fetch and update Swagger documentation dynamically from microservices."""
-    global swagger
-    paths = {}
-    tags = []
+'''
+# Helper function to forward requests
+def forward_request(url):
+    try:
+        headers = {key: value for key, value in request.headers if key.lower() != 'host'}
+        data = request.get_data()
+        response = requests.request(
+            method=request.method,
+            url=url,
+            headers=headers,
+            data=data,
+            cookies=request.cookies,
+            allow_redirects=False
+        )
+        return (response.content, response.status_code, response.headers.items())
+    except requests.exceptions.RequestException as e:
+        return jsonify({"error": f"Error connecting to service: {str(e)}"}), 500
 
-    # Fetch and aggregate the Swagger docs from microservices
-    for service_name, service_url in MICROSERVICES.items():
-        try:
-            response = requests.get(f"{service_url}/api/v1/docs/apispec.json", timeout=15)
-            response.raise_for_status()
-            service_docs = response.json()
+#### FOR SWAGGER ####
+# Create Rental Contract
+@app.route('/api/v1/rentals', methods=['POST'])
+@jwt_required()
+def create_rental():
+    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}"
+    response = forward_request(url)
+    return response
 
-            # Dynamically integrate paths from microservices
-            if "paths" in service_docs:
-                for path, operations in service_docs["paths"].items():
-                    # Ensure the paths are added under the correct service
-                    new_path = f"/{service_name}{path}"
-                    paths[new_path] = operations
+# Get All Rentals
+@app.route('/api/v1/rentals/all', methods=['GET'])
+@jwt_required()
+def get_all_rentals():
+    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/all"
+    response = forward_request(url)
+    return response
 
-            # Add the service's tag to the Swagger UI
-            if "tags" in service_docs:
-                tags.extend(service_docs["tags"])
+# Get Rental by ID
+@app.route('/api/v1/rentals/<int:rental_id>', methods=['GET'])
+@jwt_required()
+def get_rental_by_id(rental_id):
+    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    response = forward_request(url)
+    return response
 
-        except requests.RequestException as e:
-            return jsonify({"error": f"Failed to fetch Swagger docs from {service_name}: {str(e)}"}), 500
+# Update Rental Contract
+@app.route('/api/v1/rentals/<int:rental_id>', methods=['PATCH'])
+@jwt_required()
+def update_rental(rental_id):
+    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    response = forward_request(url)
+    return response
 
-    # Update Swagger UI with new paths and tags (without re-initializing)
-    swagger = update_swagger(swagger, paths, tags)
-    return jsonify({"message": "Swagger documentation updated successfully"}), 200
+# Delete Rental Contract
+@app.route('/api/v1/rentals/<int:rental_id>', methods=['DELETE'])
+@jwt_required()
+def delete_rental(rental_id):
+    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    response = forward_request(url)
+    return response
+
+'''
+
+
+
+
 
 @app.errorhandler(404)
 def not_found(e):
