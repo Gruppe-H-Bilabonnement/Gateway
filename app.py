@@ -3,10 +3,10 @@ import requests
 import sqlite3
 import bcrypt
 import os
-from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required
 from dotenv import load_dotenv
 from flasgger import swag_from
-from swagger.config import init_swagger, update_swagger
+from swagger.config import init_swagger
 from database.initialize import init_db
 
 # Load environment variables from .env file
@@ -25,7 +25,7 @@ MICROSERVICES_FOR_SWAGGER = {
     "rental_service": "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/api/v1/rentals",
 }
 
-# Configuration
+# Configuration for JWT
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 3600 # 1 hour
 jwt = JWTManager(app)
