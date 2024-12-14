@@ -1,0 +1,62 @@
+
+tags:
+  - Damage Management
+summary: "Retrieve all damage reports by car ID"
+description: "Fetches all damage reports associated with a specific car ID from the database"
+parameters:
+  - name: "car_id"
+    in: "path"
+    description: "ID of the car to retrieve damage reports for"
+    required: true
+    schema:
+      type: "integer"
+      example: 101
+responses:
+  200:
+    description: "A list of damage reports for the specified car ID"
+    content:
+      application/json:
+        schema:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              report_id:
+                type: "integer"
+                example: 1
+              car_id:
+                type: "integer"
+                example: 101
+              report_date:
+                type: "string"
+                format: "date"
+                example: "2024-01-01"
+              total_cost:
+                type: "number"
+                example: 150.00
+              damage_description:
+                type: "string"
+                example: "Minor scratch on the left door"
+              status:
+                type: "string"
+                example: "Pending"
+  404:
+    description: "No damage reports found for the given car ID"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "No damage reports found for car ID 101"
+  500:
+    description: "Internal server error"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Internal server error"

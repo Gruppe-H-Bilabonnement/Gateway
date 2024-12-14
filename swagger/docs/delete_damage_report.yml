@@ -1,0 +1,44 @@
+
+tags:
+  - Damage Management
+summary: "Remove a damage report by ID"
+description: "Deletes a damage report from the database using its ID"
+parameters:
+  - name: "report_id"
+    in: "path"
+    description: "ID of the damage report to delete"
+    required: true
+    schema:
+      type: "integer"
+      example: 1
+responses:
+  200:
+    description: "Damage report removed successfully"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            message:
+              type: "string"
+              example: "Damage report removed successfully"
+  404:
+    description: "Damage report not found"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Damage report not found"
+  500:
+    description: "Internal server error"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Internal server error"

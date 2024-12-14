@@ -1,0 +1,60 @@
+
+tags:
+  - Damage Management
+summary: "Retrieve a damage report by ID"
+description: "Fetches a specific damage report from the database by its ID"
+parameters:
+  - name: "report_id"
+    in: "path"
+    description: "ID of the damage report to retrieve"
+    required: true
+    schema:
+      type: "integer"
+      example: 1
+responses:
+  200:
+    description: "Details of the damage report"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            report_id:
+              type: "integer"
+              example: 1
+            car_id:
+              type: "integer"
+              example: 101
+            report_date:
+              type: "string"
+              format: "date"
+              example: "2024-01-01"
+            total_cost:
+              type: "number"
+              example: 150.00
+            damage_description:
+              type: "string"
+              example: "Minor scratch on the left door"
+            status:
+              type: "string"
+              example: "Pending"
+  404:
+    description: "Damage report not found"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Damage report not found"
+  500:
+    description: "Internal server error"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Internal server error"

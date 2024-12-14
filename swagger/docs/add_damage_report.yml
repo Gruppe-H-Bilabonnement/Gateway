@@ -1,0 +1,64 @@
+Add a New Damage Report
+---
+tags:
+  - Damage Management
+summary: "Add a new damage report"
+description: "Adds a new damage report to the database"
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - car_id
+        - report_date
+        - total_cost
+        - damage_description
+        - status
+      properties:
+        car_id:
+          type: integer
+          example: 101
+        report_date:
+          type: string
+          format: date
+          example: "2024-01-01"
+        total_cost:
+          type: number
+          example: 300.00
+        damage_description:
+          type: string
+          example: "Front bumper damaged due to collision"
+        status:
+          type: string
+          example: "Pending"
+responses:
+  201:
+    description: "Damage report added successfully"
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Damage report added successfully"
+  400:
+    description: "Invalid request payload"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing required field: car_id"
+  500:
+    description: "Internal server error"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Internal server error"

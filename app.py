@@ -147,6 +147,8 @@ def forward_request(url):
         return jsonify({"error": f"Error connecting to service: {str(e)}"}), 500
 
 #### FOR SWAGGER ####
+# These endpoints are not intended to be used, but was a necessity to make the Swagger UI work
+
 # Create Rental Contract
 @app.route('/api/v1/rentals', methods=['POST'])
 @swag_from('swagger/docs/create_rental.yml')
@@ -243,6 +245,54 @@ def delete_car(id):
     response = forward_request(url)
     return response
 
+# Get All Damage Reports
+@app.route('/api/v1/damages/all', methods=['GET'])
+@swag_from('swagger/docs/get_all_damage_reports.yml')
+def get_all_damage_reports():
+    url = f"{MICROSERVICES['damage_management_service']}/all"
+    response = forward_request(url)
+    return response
+
+# Get Damage Report by ID
+@app.route('/api/v1/damages/report/<int:report_id>', methods=['GET'])
+@swag_from('swagger/docs/get_damage_report_by_id.yml')
+def get_damage_report_by_id(report_id):
+    url = f"{MICROSERVICES['damage_management_service']}/report/{report_id}"
+    response = forward_request(url)
+    return response
+
+# Add a New Damage Report
+@app.route('/api/v1/damages/report', methods=['POST'])
+@swag_from('swagger/docs/add_damage_report.yml')
+def add_damage_report():
+    url = f"{MICROSERVICES['damage_management_service']}/report"
+    response = forward_request(url)
+    return response
+
+# Update Damage Report by ID
+@app.route('/api/v1/damages/report/<int:report_id>', methods=['PUT'])
+@swag_from('swagger/docs/update_damage_report.yml')
+def update_damage_report(report_id):
+    url = f"{MICROSERVICES['damage_management_service']}/report/{report_id}"
+    response = forward_request(url)
+    return response
+
+# Delete Damage Report by ID
+@app.route('/api/v1/damages/report/<int:report_id>', methods=['DELETE'])
+@swag_from('swagger/docs/delete_damage_report.yml')
+def delete_damage_report(report_id):
+    url = f"{MICROSERVICES['damage_management_service']}/report/{report_id}"
+    response = forward_request(url)
+    return response
+
+# Get Damage Reports by Car ID
+@app.route('/api/v1/damages/report/car/<int:car_id>', methods=['GET'])
+@swag_from('swagger/docs/get_damage_reports_by_car_id.yml')
+def get_damage_reports_by_car_id(car_id):
+    url = f"{MICROSERVICES['damage_management_service']}/report/car/{car_id}"
+    response = forward_request(url)
+    return response
+
 # Update Pickup Location
 @app.route('/api/v1/cars/<int:id>', methods=['PATCH'])
 @swag_from('swagger/docs/update_car_location.yml')
@@ -250,6 +300,8 @@ def update_car_location(id):
     url = f"{MICROSERVICES['car_management_service']}/car/{id}"
     response = forward_request(url)
     return response
+
+#### END OF SWAGGER ENDPOINTS ####
 
 @app.errorhandler(404)
 def not_found(e):

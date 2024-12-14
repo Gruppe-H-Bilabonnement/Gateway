@@ -1,0 +1,36 @@
+
+tags:
+  - Damage Management
+summary: "Retrieve all damage reports"
+description: "Fetches all damage reports from the database"
+responses:
+  200:
+    description: "A list of damage reports"
+    content:
+      application/json:
+        schema:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              report_id:
+                type: "integer"
+                example: 1
+              car_id:
+                type: "integer"
+                example: 101
+              report_date:
+                type: "string"
+                format: "date"
+                example: "2024-01-01"
+              total_cost:
+                type: "number"
+                example: 150.00
+              damage_description:
+                type: "string"
+                example: "Minor scratch on the left door"
+              status:
+                type: "string"
+                example: "Pending"
+  500:
+    description: "Internal server error"
