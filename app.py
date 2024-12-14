@@ -193,7 +193,6 @@ def delete_rental(rental_id):
 
 '''
 
-
 @app.errorhandler(404)
 def not_found(e):
     return jsonify({"Error": "Endpoints not found"}), 404
