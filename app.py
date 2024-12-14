@@ -43,7 +43,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-@swag_from('swagger/docs/register.yml')
+#@swag_from('swagger/docs/register.yml')
 def register():
     data = request.get_json()
     
@@ -70,7 +70,7 @@ def register():
         connection.close()
 
 @app.route('/login', methods=['POST'])
-@swag_from('swagger/docs/login.yml')
+#@swag_from('swagger/docs/login.yml')
 def login():
     data = request.get_json()
     
@@ -104,7 +104,6 @@ def gateway(service, path):
 
     # Get the full URL for the microservice
     url = f"{MICROSERVICES[service]}/{path}"
-    app.logger.debug(f"Forwarding request to {url}")
 
     # Prepare headers
     headers = {key: value for key, value in request.headers if key.lower() != 'host'}
@@ -153,7 +152,6 @@ def forward_request(url):
 #### FOR SWAGGER ####
 # Create Rental Contract
 @app.route('/api/v1/rentals', methods=['POST'])
-@jwt_required()
 def create_rental():
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}"
     response = forward_request(url)
@@ -161,7 +159,6 @@ def create_rental():
 
 # Get All Rentals
 @app.route('/api/v1/rentals/all', methods=['GET'])
-@jwt_required()
 def get_all_rentals():
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/all"
     response = forward_request(url)
@@ -169,7 +166,6 @@ def get_all_rentals():
 
 # Get Rental by ID
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['GET'])
-@jwt_required()
 def get_rental_by_id(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)
@@ -177,7 +173,6 @@ def get_rental_by_id(rental_id):
 
 # Update Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['PATCH'])
-@jwt_required()
 def update_rental(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)
@@ -185,7 +180,6 @@ def update_rental(rental_id):
 
 # Delete Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['DELETE'])
-@jwt_required()
 def delete_rental(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)
