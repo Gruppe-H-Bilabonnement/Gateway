@@ -1,0 +1,27 @@
+Delete car by ID
+---
+tags:
+  - Car Management
+summary: "Remove a car by ID"
+description: "Deletes a car from the database by its ID"
+parameters:
+  - name: "id"
+    in: "path"
+    description: "ID of the car to delete"
+    required: true
+    schema:
+      type: "integer"
+      example: 1
+responses:
+  200:
+    description: "Car deleted successfully"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            message:
+              type: "string"
+              example: "Car deleted successfully"
+  500:
+    description: "Internal server error"

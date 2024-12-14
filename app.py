@@ -21,9 +21,6 @@ MICROSERVICES = {
     "damage_management_service": os.getenv("DAMAGE_MANAGEMENT_SERVICE_URL", "https://group-h-damage-management-service-ejh4byctd4hvh9dr.northeurope-01.azurewebsites.net"),
 }
 
-MICROSERVICES_FOR_SWAGGER = {
-    "rental_service": "https://group-h-rental-service-emdqb2fjdzh7ddg2.northeurope-01.azurewebsites.net/api/v1/rentals",
-}
 
 # Configuration for JWT
 app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY', '1234')
@@ -154,7 +151,7 @@ def forward_request(url):
 @app.route('/api/v1/rentals', methods=['POST'])
 @swag_from('swagger/docs/create_rental.yml')
 def create_rental():
-    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}"
+    url = f"{MICROSERVICES['rental_service']}/api/v1/rentals"
     response = forward_request(url)
     return response
 
@@ -162,7 +159,7 @@ def create_rental():
 @app.route('/api/v1/rentals/all', methods=['GET'])
 @swag_from('swagger/docs/get_all_rentals.yml')
 def get_all_rentals():
-    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/all"
+    url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/all"
     response = forward_request(url)
     return response
 
@@ -170,7 +167,7 @@ def get_all_rentals():
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['GET'])
 @swag_from('swagger/docs/get_rental.yml')
 def get_rental_by_id(rental_id):
-    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/{rental_id}"
     response = forward_request(url)
     return response
 
@@ -178,7 +175,7 @@ def get_rental_by_id(rental_id):
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['PATCH'])
 @swag_from('swagger/docs/update_rental.yml')
 def update_rental(rental_id):
-    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/{rental_id}"
     response = forward_request(url)
     return response
 
@@ -186,10 +183,73 @@ def update_rental(rental_id):
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['DELETE'])
 @swag_from('swagger/docs/delete_rental.yml')
 def delete_rental(rental_id):
-    url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
+    url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/{rental_id}"
     response = forward_request(url)
     return response
 
+# Get All Cars
+@app.route('/api/v1/cars/all', methods=['GET'])
+@swag_from('swagger/docs/get_all_cars.yml')
+def get_all_cars():
+    url = f"{MICROSERVICES['car_management_service']}/all"
+    response = forward_request(url)
+    return response
+
+# Get Car by ID
+@app.route('/api/v1/cars/<int:id>', methods=['GET'])
+@swag_from('swagger/docs/get_car_by_id.yml')
+def get_car_by_id(id):
+    url = f"{MICROSERVICES['car_management_service']}/car/{id}"
+    response = forward_request(url)
+    return response
+
+# Get Cars by Make
+@app.route('/api/v1/cars/make/<int:car_make_id>', methods=['GET'])
+@swag_from('swagger/docs/get_cars_by_make_id.yml')
+def get_cars_by_make(car_make_id):
+    url = f"{MICROSERVICES['car_management_service']}/car/make/{car_make_id}"
+    response = forward_request(url)
+    return response
+
+# Get Cars by Fuel Type
+@app.route('/api/v1/cars/fuel/<int:fuel_type_id>', methods=['GET'])
+@swag_from('swagger/docs/get_cars_by_fuel_type.yml')
+def get_cars_by_fuel_type(fuel_type_id):
+    url = f"{MICROSERVICES['car_management_service']}/car/fuel/{fuel_type_id}"
+    response = forward_request(url)
+    return response
+
+# Get Cars by Pickup Location
+@app.route('/api/v1/cars/location/<int:pickup_location_id>', methods=['GET'])
+@swag_from('swagger/docs/get_cars_by_pickup_location_id.yml')
+def get_cars_by_pickup_location(pickup_location_id):
+    url = f"{MICROSERVICES['car_management_service']}/car/location/{pickup_location_id}"
+    response = forward_request(url)
+    return response
+
+# Add a New Car
+@app.route('/api/v1/cars', methods=['POST'])
+@swag_from('swagger/docs/add_new_car.yml')
+def add_car():
+    url = f"{MICROSERVICES['car_management_service']}/car"
+    response = forward_request(url)
+    return response
+
+# Delete Car by ID
+@app.route('/api/v1/cars/<int:id>', methods=['DELETE'])
+@swag_from('swagger/docs/delete_car_by_id.yml')
+def delete_car(id):
+    url = f"{MICROSERVICES['car_management_service']}/car/{id}"
+    response = forward_request(url)
+    return response
+
+# Update Pickup Location
+@app.route('/api/v1/cars/<int:id>', methods=['PATCH'])
+@swag_from('swagger/docs/update_car_location.yml')
+def update_car_location(id):
+    url = f"{MICROSERVICES['car_management_service']}/car/{id}"
+    response = forward_request(url)
+    return response
 
 @app.errorhandler(404)
 def not_found(e):

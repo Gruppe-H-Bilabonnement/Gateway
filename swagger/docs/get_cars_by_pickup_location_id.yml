@@ -1,0 +1,54 @@
+Get Cars by Pickup Location ID
+---
+tags:
+  - Car Management
+summary: "Retrieve cars by pickup location"
+description: "Fetches cars from the database by pickup location ID"
+parameters:
+  - name: "pickup_location_id"
+    in: "path"
+    description: "ID of the pickup location"
+    required: true
+    schema:
+      type: "integer"
+      example: 1
+responses:
+  200:
+    description: "A list of cars for the specified pickup location"
+    content:
+      application/json:
+        schema:
+          type: "array"
+          items:
+            type: "object"
+            properties:
+              car_id:
+                type: "integer"
+                example: 1
+              purchase_date:
+                type: "date"
+                example: "2021-01-01"
+              purchase_price:
+                type: "number"
+                example: 10000.00
+              car_make_id:
+                type: "integer"
+                example: 1
+              fuel_type_id:
+                type: "integer"
+                example: 1
+              pickup_location_id:
+                type: "integer"
+                example: 1
+  404:
+    description: "No cars found for the given pickup location"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "No cars found for the given pickup location"
+  500:
+    description: "Internal server error"

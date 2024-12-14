@@ -1,0 +1,52 @@
+Get Car by ID
+---
+tags:
+  - Car Management
+summary: "Retrieve a car by ID"
+description: "Fetches a car from the database by its ID"
+parameters:
+  - name: "id"
+    in: "path"
+    description: "ID of the car to retrieve"
+    required: true
+    schema:
+      type: "integer"
+      example: 1
+responses:
+  200:
+    description: "Details of the car"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            car_id:
+              type: "integer"
+              example: 1
+            purchase_date:
+              type: "date"
+              example: "2021-01-01"
+            purchase_price:
+              type: "number"
+              example: 10000.00
+            car_make_id:
+              type: "integer"
+              example: 1
+            fuel_type_id:
+              type: "integer"
+              example: 1
+            pickup_location_id:
+              type: "integer"
+              example: 1
+  404:
+    description: "Car not found"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Car not found"
+  500:
+    description: "Internal server error"

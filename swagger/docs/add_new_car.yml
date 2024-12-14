@@ -1,0 +1,65 @@
+Add a New Car
+---
+tags:
+  - Car Management
+summary: "Add a new car"
+description: "Adds a new car to the database"
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        purchase_date:
+          type: string
+          format: date
+          example: "2021-01-01"
+        purchase_price:
+          type: number
+          format: float
+          example: 10000.00
+        car_make_id:
+          type: integer
+          example: 1
+        fuel_type_id:
+          type: integer
+          example: 1
+        pickup_location_id:
+          type: integer
+          example: 1
+      required:
+        - purchase_date
+        - purchase_price
+        - car_make_id
+        - fuel_type_id
+        - pickup_location_id
+responses:
+  201:
+    description: "Car added successfully"
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Car added successfully"
+  400:
+    description: "Invalid request payload"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing or invalid fields"
+  500:
+    description: "Internal server error"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "An unexpected error occurred"
