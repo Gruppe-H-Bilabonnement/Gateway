@@ -43,7 +43,7 @@ def home():
     })
 
 @app.route('/register', methods=['POST'])
-#@swag_from('swagger/docs/register.yml')
+@swag_from('swagger/docs/register.yml')
 def register():
     data = request.get_json()
     
@@ -70,7 +70,7 @@ def register():
         connection.close()
 
 @app.route('/login', methods=['POST'])
-#@swag_from('swagger/docs/login.yml')
+@swag_from('swagger/docs/login.yml')
 def login():
     data = request.get_json()
     
@@ -131,7 +131,7 @@ def gateway(service, path):
     # Pass response back to the client
     return (response.content, response.status_code, response.headers.items())
 
-'''
+
 # Helper function to forward requests
 def forward_request(url):
     try:
@@ -185,7 +185,6 @@ def delete_rental(rental_id):
     response = forward_request(url)
     return response
 
-'''
 
 @app.errorhandler(404)
 def not_found(e):
