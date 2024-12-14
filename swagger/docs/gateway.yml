@@ -1,31 +1,45 @@
-Gateway
----
-tags:
-  - Gateway
-gateway:
-  summary: "Proxy endpoint for microservices"
-  description: "Forwards requests to the specified microservice."
-  parameters:
-    - name: "service"
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-          - car_management_service
-          - rental_service
-          - damage_management_service
-      description: "The target service to proxy the request to."
-    - name: "path"
-      in: path
-      required: true
-      schema:
-        type: string
-      description: "The specific endpoint of the microservice."
-  responses:
-    200:
-      description: "Success response from the proxied microservice"
-    404:
-      description: "Service not found"
-    500:
-      description: "Error connecting to the service"
+summary: "Forward API requests to microservices"
+description: "Handles requests to specific microservices and forwards them while validating the JWT token"
+parameters:
+  - name: "service"
+    in: "path"
+    required: true
+    description: "The name of the microservice"
+    schema:
+      type: "string"
+      example: "car_management_service"
+  - name: "path"
+    in: "path"
+    required: true
+    description: "The endpoint path within the microservice"
+    schema:
+      type: "string"
+      example: "cars"
+responses:
+  200:
+    description: "Request forwarded successfully"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          additionalProperties: true
+  404:
+    description: "Service not found"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Service not found"
+  500:
+    description: "Error connecting to service"
+    content:
+      application/json:
+        schema:
+          type: "object"
+          properties:
+            error:
+              type: "string"
+              example: "Error connecting to service: <error details>"
