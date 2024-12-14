@@ -34,7 +34,7 @@ jwt = JWTManager(app)
 init_db()
 
 # Initialize Swagger (only once during app startup)
-swagger = init_swagger(app, {}, [])
+swagger = init_swagger(app)
 
 @app.route('/')
 def home():
@@ -96,6 +96,7 @@ def login():
     return jsonify({"error": "Invalid username or password"}), 401
 
 @app.route('/<service>/<path:path>', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@swag_from('swagger/docs/gateway.yml')
 @jwt_required()
 def gateway(service, path):
     if service not in MICROSERVICES:
@@ -191,9 +192,6 @@ def delete_rental(rental_id):
     return response
 
 '''
-
-
-
 
 
 @app.errorhandler(404)
