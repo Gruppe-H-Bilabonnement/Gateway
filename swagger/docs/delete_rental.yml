@@ -1,0 +1,20 @@
+
+tags:
+  - Rental Management
+summary: "Delete a rental contract"
+description: "Deletes a rental contract from the database using its unique identifier."
+parameters:
+  - in: path
+    name: rental_id
+    required: true
+    description: "The unique ID of the rental contract to delete"
+    schema:
+      type: integer
+      example: 1
+responses:
+  200:
+    description: "Rental contract deleted successfully"
+  404:
+    description: "Rental contract not found"
+  500:
+    description: "Internal server error"

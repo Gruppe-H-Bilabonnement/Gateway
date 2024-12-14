@@ -152,6 +152,7 @@ def forward_request(url):
 #### FOR SWAGGER ####
 # Create Rental Contract
 @app.route('/api/v1/rentals', methods=['POST'])
+@swag_from('swagger/docs/create_rental.yml')
 def create_rental():
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}"
     response = forward_request(url)
@@ -159,6 +160,7 @@ def create_rental():
 
 # Get All Rentals
 @app.route('/api/v1/rentals/all', methods=['GET'])
+@swag_from('swagger/docs/get_all_rentals.yml')
 def get_all_rentals():
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/all"
     response = forward_request(url)
@@ -166,6 +168,7 @@ def get_all_rentals():
 
 # Get Rental by ID
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['GET'])
+@swag_from('swagger/docs/get_rental.yml')
 def get_rental_by_id(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)
@@ -173,6 +176,7 @@ def get_rental_by_id(rental_id):
 
 # Update Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['PATCH'])
+@swag_from('swagger/docs/update_rental.yml')
 def update_rental(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)
@@ -180,6 +184,7 @@ def update_rental(rental_id):
 
 # Delete Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['DELETE'])
+@swag_from('swagger/docs/delete_rental.yml')
 def delete_rental(rental_id):
     url = f"{MICROSERVICES_FOR_SWAGGER['rental_service']}/{rental_id}"
     response = forward_request(url)

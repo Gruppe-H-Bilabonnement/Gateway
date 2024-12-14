@@ -1,0 +1,75 @@
+Update Rental Contract
+---
+tags:
+  - Rental Management
+summary: "Update a rental contract"
+description: "Partially updates an existing rental contract with provided details."
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - in: path
+    name: rental_id
+    required: true
+    description: "The unique ID of the rental contract to update"
+    schema:
+      type: integer
+      example: 1
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+          example: "2024-02-01"
+        end_date:
+          type: string
+          format: date
+          example: "2024-11-30"
+        start_km:
+          type: integer
+          example: 10500
+        contracted_km:
+          type: integer
+          example: 31000
+        monthly_price:
+          type: number
+          format: float
+          example: 509.99
+responses:
+  200:
+    description: "Rental contract updated successfully"
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Rental contract updated successfully"
+  400:
+    description: "Invalid input or no data provided for update"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Invalid input provided"
+  404:
+    description: "Rental contract not found"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Rental contract not found"
+  500:
+    description: "Internal server error"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Internal server error"

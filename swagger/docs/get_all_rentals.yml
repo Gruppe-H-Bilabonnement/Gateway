@@ -1,0 +1,44 @@
+
+tags:
+  - Rental Management
+summary: "Retrieve all rental contracts"
+description: "Fetches a list of all rental contracts in the system."
+responses:
+  200:
+    description: "A list of rental contracts"
+    content:
+      application/json:
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              rental_id:
+                type: integer
+                example: 1
+              start_date:
+                type: string
+                format: date
+                example: "2024-01-01"
+              end_date:
+                type: string
+                format: date
+                example: "2024-12-31"
+              start_km:
+                type: integer
+                example: 10000
+              contracted_km:
+                type: integer
+                example: 30000
+              monthly_price:
+                type: number
+                format: float
+                example: 499.99
+              car_id:
+                type: integer
+                example: 1
+              customer_id:
+                type: integer
+                example: 2
+  500:
+    description: "Internal server error"

@@ -1,0 +1,52 @@
+
+tags:
+  - Rental Management
+summary: "Retrieve a rental contract by ID"
+description: "Fetches a single rental contract using its unique identifier."
+parameters:
+  - in: path
+    name: rental_id
+    required: true
+    description: "The unique ID of the rental contract"
+    schema:
+      type: integer
+      example: 1
+responses:
+  200:
+    description: "Rental contract retrieved successfully"
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            rental_id:
+              type: integer
+              example: 1
+            start_date:
+              type: string
+              format: date
+              example: "2024-01-01"
+            end_date:
+              type: string
+              format: date
+              example: "2024-12-31"
+            start_km:
+              type: integer
+              example: 10000
+            contracted_km:
+              type: integer
+              example: 30000
+            monthly_price:
+              type: number
+              format: float
+              example: 499.99
+            car_id:
+              type: integer
+              example: 1
+            customer_id:
+              type: integer
+              example: 2
+  404:
+    description: "Rental contract not found"
+  500:
+    description: "Internal server error"

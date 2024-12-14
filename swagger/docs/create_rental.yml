@@ -1,0 +1,66 @@
+Create Rental Contract
+---
+tags:
+  - Rental Management
+summary: "Create a new rental contract"
+description: "Creates a new rental contract with the specified details."
+consumes:
+  - application/json
+produces:
+  - application/json
+parameters:
+  - name: body
+    in: body
+    required: true
+    schema:
+      type: object
+      properties:
+        start_date:
+          type: string
+          format: date
+          example: "2024-01-01"
+        end_date:
+          type: string
+          format: date
+          example: "2024-12-31"
+        start_km:
+          type: integer
+          example: 10000
+        contracted_km:
+          type: integer
+          example: 30000
+        monthly_price:
+          type: number
+          format: float
+          example: 499.99
+        car_id:
+          type: integer
+          example: 1
+        customer_id:
+          type: integer
+          example: 2
+responses:
+  201:
+    description: "Rental contract created successfully"
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Rental contract created successfully"
+  400:
+    description: "Missing required fields"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Missing or invalid input fields"
+  500:
+    description: "Internal server error"
+    schema:
+      type: object
+      properties:
+        error:
+          type: string
+          example: "Internal server error"
