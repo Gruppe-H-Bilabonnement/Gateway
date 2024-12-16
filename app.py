@@ -151,6 +151,7 @@ def forward_request(url):
 
 # Create Rental Contract
 @app.route('/api/v1/rentals', methods=['POST'])
+@jwt_required()
 @swag_from('swagger/docs/create_rental.yml')
 def create_rental():
     url = f"{MICROSERVICES['rental_service']}/api/v1/rentals"
@@ -175,6 +176,7 @@ def get_rental_by_id(rental_id):
 
 # Update Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['PATCH'])
+@jwt_required()
 @swag_from('swagger/docs/update_rental.yml')
 def update_rental(rental_id):
     url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/{rental_id}"
@@ -183,6 +185,7 @@ def update_rental(rental_id):
 
 # Delete Rental Contract
 @app.route('/api/v1/rentals/<int:rental_id>', methods=['DELETE'])
+@jwt_required()
 @swag_from('swagger/docs/delete_rental.yml')
 def delete_rental(rental_id):
     url = f"{MICROSERVICES['rental_service']}/api/v1/rentals/{rental_id}"
@@ -240,6 +243,7 @@ def add_car():
 
 # Delete Car by ID
 @app.route('/api/v1/cars/<int:id>', methods=['DELETE'])
+@jwt_required()
 @swag_from('swagger/docs/delete_car_by_id.yml')
 def delete_car(id):
     url = f"{MICROSERVICES['car_management_service']}/api/v1/car-management/car/{id}"
@@ -264,6 +268,7 @@ def get_damage_report_by_id(report_id):
 
 # Add a New Damage Report
 @app.route('/api/v1/damages/report', methods=['POST'])
+@jwt_required()
 @swag_from('swagger/docs/add_damage_report.yml')
 def add_damage_report():
     url = f"{MICROSERVICES['damage_management_service']}/api/v1/damage-management/report"
@@ -272,6 +277,7 @@ def add_damage_report():
 
 # Update Damage Report by ID
 @app.route('/api/v1/damages/report/<int:report_id>', methods=['PUT'])
+@jwt_required()
 @swag_from('swagger/docs/update_damage_report.yml')
 def update_damage_report(report_id):
     url = f"{MICROSERVICES['damage_management_service']}/api/v1/damage-management/report/{report_id}"
@@ -280,6 +286,7 @@ def update_damage_report(report_id):
 
 # Delete Damage Report by ID
 @app.route('/api/v1/damages/report/<int:report_id>', methods=['DELETE'])
+@jwt_required()
 @swag_from('swagger/docs/delete_damage_report.yml')
 def delete_damage_report(report_id):
     url = f"{MICROSERVICES['damage_management_service']}/api/v1/damage-management/report/{report_id}"
@@ -296,6 +303,7 @@ def get_damage_reports_by_car_id(car_id):
 
 # Update Pickup Location
 @app.route('/api/v1/cars/<int:id>', methods=['PATCH'])
+@jwt_required()
 @swag_from('swagger/docs/update_car_location.yml')
 def update_car_location(id):
     url = f"{MICROSERVICES['car_management_service']}/api/v1/damage-management/car/{id}"
