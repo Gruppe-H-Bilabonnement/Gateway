@@ -65,7 +65,7 @@ def home():
             },
             {
                 "method": "GET",
-                "endpoint": "/api/v1/rentals/<int:rental_id>",
+                "endpoint": "/api/v1/rentals/int:rental_id",
                 "description": "Retrieve a rental contract by ID"
             },
             {
