@@ -231,6 +231,7 @@ def get_cars_by_pickup_location(pickup_location_id):
 
 # Add a New Car
 @app.route('/api/v1/cars', methods=['POST'])
+@jwt_required()
 @swag_from('swagger/docs/add_new_car.yml')
 def add_car():
     url = f"{MICROSERVICES['car_management_service']}/car"
