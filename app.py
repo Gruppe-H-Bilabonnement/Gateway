@@ -37,119 +37,119 @@ swagger = init_swagger(app)
 def home():
     return jsonify({
     "message": "Welcome to API Gateway",
-    "endpoints": [
-        {
-            "method": "GET",
-            "endpoint": "/",
-            "description": "Provides an overview of the API Gateway and its microservices"
-        },
-        {
-            "method": "POST",
-            "endpoint": "/api/v1/register",
-            "description": "Register a new user"
-        },
-        {
-            "method": "POST",
-            "endpoint": "/api/v1/login",
-            "description": "Login to obtain a JWT token"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/rentals/all",
-            "description": "Retrieve all rental contracts"
-        },
-        {
-            "method": "POST",
-            "endpoint": "/api/v1/rentals",
-            "description": "Create a new rental contract"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/rentals/<int:rental_id>",
-            "description": "Retrieve a rental contract by ID"
-        },
-        {
-            "method": "PATCH",
-            "endpoint": "/api/v1/rentals/<int:rental_id>",
-            "description": "Update a rental contract by ID"
-        },
-        {
-            "method": "DELETE",
-            "endpoint": "/api/v1/rentals/<int:rental_id>",
-            "description": "Delete a rental contract by ID"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/cars/all",
-            "description": "Retrieve all cars"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/cars/<int:id>",
-            "description": "Retrieve a car by its ID"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/cars/make/<int:car_make_id>",
-            "description": "Retrieve cars by car make ID"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/cars/fuel/<int:fuel_type_id>",
-            "description": "Retrieve cars by fuel type ID"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/cars/location/<int:pickup_location_id>",
-            "description": "Retrieve cars by pickup location ID"
-        },
-        {
-            "method": "POST",
-            "endpoint": "/api/v1/cars",
-            "description": "Add a new car"
-        },
-        {
-            "method": "DELETE",
-            "endpoint": "/api/v1/cars/<int:id>",
-            "description": "Remove a car by ID"
-        },
-        {
-            "method": "PATCH",
-            "endpoint": "/api/v1/cars/<int:id>",
-            "description": "Update pickup location of a car"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/damages/all",
-            "description": "Retrieve all damage reports"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/damages/report/<int:report_id>",
-            "description": "Retrieve a damage report by ID"
-        },
-        {
-            "method": "POST",
-            "endpoint": "/api/v1/damages/report",
-            "description": "Add a new damage report"
-        },
-        {
-            "method": "PUT",
-            "endpoint": "/api/v1/damages/report/<int:report_id>",
-            "description": "Update a damage report by ID"
-        },
-        {
-            "method": "DELETE",
-            "endpoint": "/api/v1/damages/report/<int:report_id>",
-            "description": "Delete a damage report by ID"
-        },
-        {
-            "method": "GET",
-            "endpoint": "/api/v1/damages/report/car/<int:car_id>",
-            "description": "Retrieve all damage reports for a specific car by car ID"
-        }
-    ]
-}
+        "endpoints": [
+            {
+                "method": "GET",
+                "endpoint": "/",
+                "description": "Provides an overview of the API Gateway and its microservices"
+            },
+            {
+                "method": "POST",
+                "endpoint": "/api/v1/register",
+                "description": "Register a new user"
+            },
+            {
+                "method": "POST",
+                "endpoint": "/api/v1/login",
+                "description": "Login to obtain a JWT token"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/rentals/all",
+                "description": "Retrieve all rental contracts"
+            },
+            {
+                "method": "POST",
+                "endpoint": "/api/v1/rentals",
+                "description": "Create a new rental contract"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/rentals/<int:rental_id>",
+                "description": "Retrieve a rental contract by ID"
+            },
+            {
+                "method": "PATCH",
+                "endpoint": "/api/v1/rentals/<int:rental_id>",
+                "description": "Update a rental contract by ID"
+            },
+            {
+                "method": "DELETE",
+                "endpoint": "/api/v1/rentals/<int:rental_id>",
+                "description": "Delete a rental contract by ID"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/cars/all",
+                "description": "Retrieve all cars"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/cars/<int:id>",
+                "description": "Retrieve a car by its ID"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/cars/make/<int:car_make_id>",
+                "description": "Retrieve cars by car make ID"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/cars/fuel/<int:fuel_type_id>",
+                "description": "Retrieve cars by fuel type ID"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/cars/location/<int:pickup_location_id>",
+                "description": "Retrieve cars by pickup location ID"
+            },
+            {
+                "method": "POST",
+                "endpoint": "/api/v1/cars",
+                "description": "Add a new car"
+            },
+            {
+                "method": "DELETE",
+                "endpoint": "/api/v1/cars/<int:id>",
+                "description": "Remove a car by ID"
+            },
+            {
+                "method": "PATCH",
+                "endpoint": "/api/v1/cars/<int:id>",
+                "description": "Update pickup location of a car"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/damages/all",
+                "description": "Retrieve all damage reports"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/damages/report/<int:report_id>",
+                "description": "Retrieve a damage report by ID"
+            },
+            {
+                "method": "POST",
+                "endpoint": "/api/v1/damages/report",
+                "description": "Add a new damage report"
+            },
+            {
+                "method": "PUT",
+                "endpoint": "/api/v1/damages/report/<int:report_id>",
+                "description": "Update a damage report by ID"
+            },
+            {
+                "method": "DELETE",
+                "endpoint": "/api/v1/damages/report/<int:report_id>",
+                "description": "Delete a damage report by ID"
+            },
+            {
+                "method": "GET",
+                "endpoint": "/api/v1/damages/report/car/<int:car_id>",
+                "description": "Retrieve all damage reports for a specific car by car ID"
+            }
+        ]
+    }
 )
 
 @app.route('/register', methods=['POST'])
