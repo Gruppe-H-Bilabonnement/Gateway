@@ -72,17 +72,35 @@ api-gateway-service/
 
 ### Base URL: `/api/v1`
 
-| Method | Endpoint                                   | Description                                      |
-|--------|-------------------------------------------|--------------------------------------------------|
-| POST   | `/register`                               | Register a new user                             |
-| POST   | `/login`                                  | Authenticate user and generate JWT token        |
-| ANY    | `/<service>/<path>`                       | Forward request to the specified microservice   |
+| Method | Endpoint                                       | Description                              | Microservice              |
+|--------|-----------------------------------------------|------------------------------------------|---------------------------|
+| POST   | /api/v1/auth/login                            | User Login                               | gateway                   |
+| POST   | /api/v1/auth/register                         | User Registration                        | gateway                   |
+| POST   | /api/v1/rentals                               | Create Rental Contract (JWT Required)    | rental_service            |
+| GET    | /api/v1/rentals/all                           | Get All Rentals                          | rental_service            |
+| GET    | /api/v1/rentals/<int:rental_id>               | Get Rental by ID                         | rental_service            |
+| PATCH  | /api/v1/rentals/<int:rental_id>               | Update Rental Contract (JWT Required)    | rental_service            |
+| DELETE | /api/v1/rentals/<int:rental_id>               | Delete Rental Contract (JWT Required)    | rental_service            |
+| GET    | /api/v1/cars/all                              | Get All Cars                             | car_management_service    |
+| GET    | /api/v1/cars/<int:id>                         | Get Car by ID                            | car_management_service    |
+| GET    | /api/v1/cars/make/<int:car_make_id>           | Get Cars by Make                         | car_management_service    |
+| GET    | /api/v1/cars/fuel/<int:fuel_type_id>          | Get Cars by Fuel Type                    | car_management_service    |
+| GET    | /api/v1/cars/location/<int:pickup_location_id>| Get Cars by Pickup Location              | car_management_service    |
+| POST   | /api/v1/cars                                  | Add a New Car (JWT Required)             | car_management_service    |
+| DELETE | /api/v1/cars/<int:id>                         | Delete Car by ID (JWT Required)          | car_management_service    |
+| PATCH  | /api/v1/cars/<int:id>                         | Update Pickup Location (JWT Required)    | car_management_service    |
+| GET    | /api/v1/damages/all                           | Get All Damage Reports                   | damage_management_service |
+| GET    | /api/v1/damages/report/<int:report_id>        | Get Damage Report by ID                  | damage_management_service |
+| POST   | /api/v1/damages/report                        | Add a New Damage Report (JWT Required)   | damage_management_service |
+| PUT    | /api/v1/damages/report/<int:report_id>        | Update Damage Report by ID (JWT Required)| damage_management_service |
+| DELETE | /api/v1/damages/report/<int:report_id>        | Delete Damage Report by ID (JWT Required)| damage_management_service |
+| GET    | /api/v1/damages/report/car/<int:car_id>       | Get Damage Reports by Car ID             | damage_management_service |
 
 ---
 
 ## Documentation
 
 ### Swagger UI
-Interactive API documentation available at: `.../api/v1/docs`
+Interactive API documentation available at: `https://group-h-api-gateway-h9g7egage5a7dmd8.northeurope-01.azurewebsites.net/api/v1/docs`
 
 ---
